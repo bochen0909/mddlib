@@ -113,6 +113,7 @@ ExternalProject_Add(boostlib
   --with-libraries=iostreams
   --with-libraries=date_time
   --with-libraries=random
+  --with-libraries=test
   --prefix=<INSTALL_DIR>
   BUILD_COMMAND
   C_INCLUDE_PATH=${PROJECT_SOURCE_DIR}/deps/local/include
@@ -132,10 +133,10 @@ set_target_properties(boostlib PROPERTIES EXCLUDE_FROM_ALL TRUE)
 	link_directories( "${LOCAL_EXT_PREFIX_DIR}/lib" )
 	link_directories( "${LOCAL_EXT_PREFIX_DIR}/lib64" )
 
-	add_executable(test_lz4string src/test_lz4string.cpp )
-	add_dependencies(test_lz4string lz4lib gzstreamlib boostlib)
-	target_include_directories(test_lz4string PUBLIC "${LOCAL_EXT_PREFIX_DIR}/include" )
-	target_link_libraries(test_lz4string PUBLIC lz4 gzstream Threads::Threads)
+	add_executable(test_strutils src/test_strutils.cpp src/mdd/strutils.cpp )
+	add_dependencies(test_strutils boostlib)
+	target_include_directories(test_strutils PUBLIC "${LOCAL_EXT_PREFIX_DIR}/include" )
+	target_link_libraries(test_strutils PUBLIC lz4 boost_unit_test_framework)
 	
 
 
