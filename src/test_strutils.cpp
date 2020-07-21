@@ -193,3 +193,17 @@ BOOST_AUTO_TEST_CASE(test_replace) {
 	BOOST_TEST(" ct sits on  mt" == replace("a cat sits on a mat","a",""));
 }
 
+BOOST_AUTO_TEST_CASE(test_hash) {
+	uint32_t h;
+	std::string s = string("ASDF");
+	h = fnv_hash("ASDF");
+	h = fnv_hash(s);
+	h = fnv_hash(string("ASDF"));
+	h = fnv_hash("ASDF");
+	h = fnv_hash((size_t) 32);
+	h = fnv_hash((int) 32);
+	h = fnv_hash((uint32_t) 32);
+	h = fnv_hash((int32_t) 32);
+	h = fnv_hash((uint64_t) 32);
+	h = fnv_hash((int64_t) 32);
+}

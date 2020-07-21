@@ -14,6 +14,14 @@
 using namespace std;
 namespace mdd {
 
+uint32_t _internal_fnv_hash(const std::string &str) {
+	uint32_t h = 2166136261;
+	for (size_t i = 0; i < str.size(); i++) {
+		h = h ^ uint32_t(int8_t(str[i]));
+		h = h * 16777619;
+	}
+	return h;
+}
 
 std::string replace(const std::string &s, const char *search,
 		const char *substr) {
@@ -171,72 +179,6 @@ std::vector<std::string> split(const std::string &source) {
 	std::vector<std::string> v;
 	split(v, source);
 	return v;
-}
-
-template<> std::string as_string(int16_t v){
-	return boost::lexical_cast<std::string>(v);
-}
-
-template<> std::string as_string(int32_t v){
-	return boost::lexical_cast<std::string>(v);
-}
-
-template<> std::string as_string(int64_t v){
-	return boost::lexical_cast<std::string>(v);
-}
-
-template<> std::string as_string(uint16_t v){
-	return boost::lexical_cast<std::string>(v);
-}
-
-template<> std::string as_string(uint32_t v){
-	return boost::lexical_cast<std::string>(v);
-}
-
-template<> std::string as_string(uint64_t v){
-	return boost::lexical_cast<std::string>(v);
-}
-
-template<> std::string as_string(float v){
-	return boost::lexical_cast<std::string>(v);
-}
-
-template<> std::string as_string(double v){
-	return boost::lexical_cast<std::string>(v);
-}
-
-template<> int16_t cast(std::string v){
-	return boost::lexical_cast<int16_t>(v);
-}
-
-template<> uint16_t cast(std::string v){
-	return boost::lexical_cast<uint16_t>(v);
-}
-
-
-template<> int32_t cast(std::string v){
-	return boost::lexical_cast<int32_t>(v);
-}
-
-template<> uint32_t cast(std::string v){
-	return boost::lexical_cast<uint32_t>(v);
-}
-
-template<> int64_t cast(std::string v){
-	return boost::lexical_cast<int64_t>(v);
-}
-
-template<> uint64_t cast(std::string v){
-	return boost::lexical_cast<uint64_t>(v);
-}
-
-
-template<> float cast(std::string v){
-	return boost::lexical_cast<float>(v);
-}
-
-template<> double cast(std::string v){
-	return boost::lexical_cast<double>(v);
 }
 
 } //end namespace
