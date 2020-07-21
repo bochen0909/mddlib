@@ -135,11 +135,12 @@ set_target_properties(boostlib PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
 	add_executable(test_strutils src/test_strutils.cpp src/mdd/strutils.cpp)
 	add_executable(test_sysutils src/test_sysutils.cpp src/mdd/sysutils.cpp src/mdd/strutils.cpp )	
+	add_executable(test_fsutils src/test_fsutils.cpp src/mdd/fsutils.cpp src/mdd/strutils.cpp )
 	
-	foreach(EXEC test_strutils test_sysutils)
+	foreach(EXEC test_strutils test_sysutils test_fsutils)
 		add_dependencies(${EXEC} boostlib)
 		target_include_directories(${EXEC} PUBLIC "${LOCAL_EXT_PREFIX_DIR}/include" )
-		target_link_libraries(${EXEC} PUBLIC boost_unit_test_framework)
+		target_link_libraries(${EXEC} PUBLIC boost_unit_test_framework boost_filesystem )
 	endforeach(EXEC)
 	
 
