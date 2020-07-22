@@ -68,16 +68,15 @@ template<> inline binary_iarchive& binary_iarchive::operator>>(
 }
 
 template<> inline binary_oarchive& binary_oarchive::operator<<(const std::string &s) {
-	char buf[s.length() + 1];
-	char *p1 = buf;
 	const char *p2 = s.data();
 	for (size_t i = 0; i < s.length(); i++) {
-		*p1 = *p2;
-		p1++;
+		add_raw(p2, 1);
 		p2++;
 	}
-	buf[s.length()] = '\0';
-	add_raw(reinterpret_cast<const char*>(buf), sizeof(s.length() + 1));
+	char t[]="\0";
+	add_raw(t, 1);
+
+
 	return *this;
 }
 
