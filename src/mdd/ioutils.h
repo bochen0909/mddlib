@@ -9,9 +9,8 @@
 #define SUBPROJECTS__MDDLIB_SRC_MDD_IOUTILS_H_
 
 #include <string>
-#include <memory>
 #include <fstream>
-
+#include "binaryarchive.h"
 namespace mdd {
 
 enum STREAM_FORMAT {
@@ -19,7 +18,7 @@ enum STREAM_FORMAT {
 };
 
 enum STREAM_COMPRESSION {
-	NONE = 0, GZIP, LZ4
+	NONE = 0, GZIP, LZ4, SNAPPY
 };
 
 class outputstream {
@@ -32,8 +31,13 @@ public:
 	virtual ~outputstream();
 
 	template<typename T> outputstream& operator<<(const T &v) {
-		std::ostream &os = *owrite;
-		os << v;
+		if (_format == TEXT_FORMAT) {
+			std::ostream &os = *owrite;
+			os << v;
+		} else {
+			binary_oarchive &os = *oarchive;
+			os << v;
+		}
 		return *this;
 	}
 
@@ -50,8 +54,11 @@ public:
 protected:
 	void init();
 private:
-	std::shared_ptr<std::ofstream> ounderlying;
-	std::shared_ptr<std::ostream> owrite;
+	// ounderlying -> [ounderlying2] -> oread
+	std::ostream *ounderlying = NULL;
+	std::ostream *ounderlying2 = NULL;
+	binary_oarchive *oarchive = NULL;
+	std::ostream *owrite = NULL;
 	STREAM_FORMAT _format;
 	STREAM_COMPRESSION _compression;
 	std::string filepath;
@@ -67,8 +74,13 @@ public:
 	virtual ~inputstream();
 
 	template<typename T> inputstream& operator>>(T &v) {
-		std::istream &os = *oread;
-		os >> v;
+		if (_format == TEXT_FORMAT) {
+			std::istream &os = *oread;
+			os >> v;
+		} else {
+			auto &os = *iarchive;
+			os >> v;
+		}
 		return *this;
 	}
 
@@ -92,8 +104,11 @@ public:
 protected:
 	void init();
 private:
-	std::shared_ptr<std::ifstream> ounderlying;
-	std::shared_ptr<std::istream> oread;
+	// ounderlying -> [ounderlying2] -> oread
+	std::istream *ounderlying = NULL;
+	std::istream *ounderlying2 = NULL;
+	binary_iarchive *iarchive = NULL;
+	std::istream *oread = NULL;
 	STREAM_FORMAT _format;
 	STREAM_COMPRESSION _compression;
 	std::string filepath;

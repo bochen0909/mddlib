@@ -86,7 +86,21 @@ ExternalProject_Add(snappylib
   INSTALL_COMMAND  cd build && make install 
   )
 set_target_properties(snappylib PROPERTIES EXCLUDE_FROM_ALL TRUE)
+
+ExternalProject_Add(snappystreamlib
+  DEPENDS snappylib
+  PREFIX ${PROJECT_SOURCE_DIR}/deps
+  GIT_REPOSITORY https://github.com/hoxnox/snappystream.git
+  GIT_TAG 1.0.0
+  INSTALL_DIR ${PROJECT_SOURCE_DIR}/deps/local
+  BUILD_IN_SOURCE 1
+  CONFIGURE_COMMAND  "" 
+  BUILD_COMMAND  mkdir -p build && cd build && cmake -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> .. && make 
+  INSTALL_COMMAND  cd build && make install 
+  )
+set_target_properties(snappystreamlib PROPERTIES EXCLUDE_FROM_ALL TRUE)
   
+    
 ExternalProject_Add(lz4lib
   PREFIX ${PROJECT_SOURCE_DIR}/deps
   GIT_REPOSITORY https://github.com/lz4/lz4.git
@@ -140,9 +154,9 @@ set_target_properties(boostlib PROPERTIES EXCLUDE_FROM_ALL TRUE)
 	add_executable(test_ioutils src/test_ioutils.cpp src/mdd/ioutils.cpp src/mdd/fsutils.cpp src/mdd/strutils.cpp )	
 	
 	foreach(EXEC test_strutils test_sysutils test_fsutils test_ioutils)
-		add_dependencies(${EXEC} gzstreamlib lz4lib boostlib)
+		add_dependencies(${EXEC} gzstreamlib lz4lib boostlib snappystreamlib)
 		target_include_directories(${EXEC} PUBLIC "${LOCAL_EXT_PREFIX_DIR}/include" )
-		target_link_libraries(${EXEC} PUBLIC gzstream lz4 boost_unit_test_framework boost_filesystem boost_serialization ZLIB::ZLIB )
+		target_link_libraries(${EXEC} PUBLIC snappystream snappy gzstream lz4  boost_unit_test_framework boost_filesystem boost_serialization ZLIB::ZLIB )
 	endforeach(EXEC)
 	
 
