@@ -3,9 +3,9 @@ cmake_minimum_required(VERSION 3.10)
 project(mddlib VERSION 0.1.0 LANGUAGES CXX)
 
 #specify the C++ standard
-set(CMAKE_STANDARD 11)
+set(CMAKE_STANDARD 14)
 set(CMAKE_STANDARD_REQUIRED True)
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -112,6 +112,7 @@ ExternalProject_Add(boostlib
   --with-libraries=system
   --with-libraries=iostreams
   --with-libraries=date_time
+  --with-libraries=serialization
   --with-libraries=random
   --with-libraries=test
   --prefix=<INSTALL_DIR>
@@ -136,11 +137,12 @@ set_target_properties(boostlib PROPERTIES EXCLUDE_FROM_ALL TRUE)
 	add_executable(test_strutils src/test_strutils.cpp src/mdd/strutils.cpp)
 	add_executable(test_sysutils src/test_sysutils.cpp src/mdd/sysutils.cpp src/mdd/strutils.cpp )	
 	add_executable(test_fsutils src/test_fsutils.cpp src/mdd/fsutils.cpp src/mdd/strutils.cpp )
+	add_executable(test_ioutils src/test_ioutils.cpp src/mdd/ioutils.cpp src/mdd/fsutils.cpp src/mdd/strutils.cpp )	
 	
-	foreach(EXEC test_strutils test_sysutils test_fsutils)
-		add_dependencies(${EXEC} boostlib)
+	foreach(EXEC test_strutils test_sysutils test_fsutils test_ioutils)
+		add_dependencies(${EXEC} gzstreamlib lz4lib boostlib)
 		target_include_directories(${EXEC} PUBLIC "${LOCAL_EXT_PREFIX_DIR}/include" )
-		target_link_libraries(${EXEC} PUBLIC boost_unit_test_framework boost_filesystem )
+		target_link_libraries(${EXEC} PUBLIC gzstream lz4 boost_unit_test_framework boost_filesystem boost_serialization ZLIB::ZLIB )
 	endforeach(EXEC)
 	
 
